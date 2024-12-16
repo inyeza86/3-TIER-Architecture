@@ -1,0 +1,65 @@
+pipeline {
+    agent {
+        label 'jenkins-node'
+    }
+
+    parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['apply', 'destroy'],
+            description: 'Choose the action to perform: apply (default) or destroy'
+        )
+    }
+
+    stages {
+        stage('Checking SCM') {
+            steps {
+                git branch: 'main', url: 'https://github.com/inyeza86/3-TIER-Architecture.git'
+            }
+        }
+
+        stage('Setup Terraform') {
+            steps {
+                sh 'terraform -version'
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir('Terraform') {
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Apply or Destroy') {
+            when {
+                expression { params.ACTION == 'apply' || params.ACTION == 'destroy' }
+            }
+            steps {
+                script {
+                    if (params.ACTION == 'apply') {
+                        dir('Terraform') {
+                            sh 'terraform validate'
+                            sh 'terraform plan -no-color -input=false -out planfile'
+                            sh 'terraform apply -auto-approve -input=false -parallelism=1 planfile'
+                        }
+                    } else if (params.ACTION == 'destroy') {
+                        dir('Terraform') {
+                            sh 'terraform destroy -auto-approve -input=false'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+     
+
+
+
+
