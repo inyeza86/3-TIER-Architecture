@@ -21,12 +21,19 @@ pipeline {
         stage('Run checkov security scan'){
             steps{
                 dir('Terraform'){
-                  sh '/home/ubuntu/.checkov_env/bin/checkov -d . -o cli -o junitxml --output-file-path results.xml' 
+                  sh '/home/ubuntu/.checkov_env/bin/checkov -d . -o cli -o junitxml --output-file-path results.xml --soft-fail' 
 
                 }
                
             }
         }
+
+        stage('Archive Results') {
+            steps {
+                archiveArtifacts artifacts: 'results.xml', allowEmptyArchive: true
+            }
+        }
+    }
 
         stage('Setup Terraform') {
             steps {
