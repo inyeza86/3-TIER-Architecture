@@ -20,8 +20,10 @@ pipeline {
 
         stage('Run checkov security scan'){
             steps{
-               sh source ~/.checkov_env/bin/activate
-               sh "checkov -d . --use-enforcement-rules -o cli -o junitxml --output-file-path console,results.xml --repo-id example/terragoat --branch master --branch master" 
+                dir('Terraform'){
+                  sh 'checkov -d . --use-enforcement-rules -o cli -o junitxml --output-file-path console,results.xml' 
+                }
+               
             }
         }
 
