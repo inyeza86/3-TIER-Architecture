@@ -18,6 +18,12 @@ pipeline {
             }
         }
 
+        stage('Run checkov security scan'){
+            steps{
+               sh "pipenv run checkov -d . --use-enforcement-rules -o cli -o junitxml --output-file-path console,results.xml --repo-id inyeza86/3-TIER-Architecture --branch main" 
+            }
+        }
+
         stage('Setup Terraform') {
             steps {
                 sh 'terraform -version'
