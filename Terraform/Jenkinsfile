@@ -21,7 +21,7 @@ pipeline {
         stage('Run checkov security scan'){
             steps{
                 dir('Terraform'){
-                  sh '/home/ubuntu/.checkov_env/bin/checkov --file vpc.tf --use-enforcement-rules -o cli -o junitxml --output-file-path console,results.xml' 
+                  sh '/home/ubuntu/.checkov_env/bin/checkov --file vpc.tf -o cli -o junitxml --output-file-path console,results.xml' 
                 }
                
             }
