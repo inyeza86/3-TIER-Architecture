@@ -18,7 +18,8 @@ pipeline {
             }
         }
 
-        stage('Run checkov security scan'){
+        
+       /* stage('Run checkov and tfsec security scan'){
             steps{
                 dir('Terraform'){
                   //sh '/home/ubuntu/.checkov_env/bin/checkov -d . -o cli -o junitxml --output-file-path results.xml --soft-fail' 
@@ -28,11 +29,28 @@ pipeline {
                 }
                
             }
+        }*/
+
+        /*stage('Archive Results') {
+            steps {
+                archiveArtifacts artifacts: 'tfsec-results.xml', allowEmptyArchive: true
+            }
+        }*/
+
+        stage('Run trivy security scan'){
+            steps{
+                dir('Terraform'){ 
+                    //Run trivy with JUnit XML output
+                  sh 'trivy filesystem --severity CRITICAL,HIGH --exit-code 0 --no-progress . > trivy-results.txt'
+
+                }
+               
+            }
         }
 
         stage('Archive Results') {
             steps {
-                archiveArtifacts artifacts: 'tfsec-results.xml', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'trivy-results.txt', allowEmptyArchive: true
             }
         }
     
