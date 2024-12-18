@@ -22,7 +22,8 @@ pipeline {
             steps{
                 dir('Terraform'){
                   //sh '/home/ubuntu/.checkov_env/bin/checkov -d . -o cli -o junitxml --output-file-path results.xml --soft-fail' 
-                  sh 'tfsec .'
+                   // Run tfsec with JUnit XML output
+                  sh 'tfsec . --format junit --output tfsec-results.xml || true'
 
                 }
                
@@ -31,7 +32,7 @@ pipeline {
 
         stage('Archive Results') {
             steps {
-                archiveArtifacts artifacts: 'results.xml', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'tfsec-results.xml', allowEmptyArchive: true
             }
         }
     
