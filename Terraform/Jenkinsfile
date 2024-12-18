@@ -23,7 +23,7 @@ pipeline {
                 dir('Terraform'){
                   //sh '/home/ubuntu/.checkov_env/bin/checkov -d . -o cli -o junitxml --output-file-path results.xml --soft-fail' 
                    // Run tfsec with JUnit XML output
-                  sh 'tfsec . --format junit --output tfsec-results.xml || true'
+                  sh 'tfsec . --format junit --out tfsec-results.xml || true'
 
                 }
                
